@@ -9,6 +9,7 @@ import com.swaglabs.pages.CheckoutPage1;
 import com.swaglabs.pages.CheckoutPage2;
 import com.swaglabs.pages.HomePage;
 
+import generics.WebDriverUtils;
 import hooks.BaseClass;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -20,16 +21,15 @@ public class SwagLabs {
 	HomePage h;
 	CheckoutPage1 c1;
 	CheckoutPage2 c2;
-	
-@Given("user should be present in home page of swag labs")
-public void user_should_be_present_in_home_page_of_swag_labs() {
-	System.out.println(driver.getCurrentUrl());
-}
-
-@When("he selects the low to high price option in the dropdown")
-public void he_selects_the_low_to_high_price_option_in_the_dropdown() {
+	WebDriverUtils w=new WebDriverUtils();
+	@Given("user should be present in {string} page of swag labs")
+	public void user_should_be_present_in_page_of_swag_labs(String expectedUrl) {
+		w.verifyUrl(expectedUrl);
+	}
+@When("he selects the {string} option in the dropdown")
+public void he_selects_the_option_in_the_dropdown(String option) {
 	h=new HomePage(driver);
-	h.setOptionInSortDropdown("(low to high)");
+	h.setOptionInSortDropdown(option);
 }
 
 @And("he clicks on add to cart button of the first item")
@@ -48,10 +48,9 @@ public void he_clicks_on_cart_icon() {
 	h.setCartIcon();
 }
 
-@Then("he should be present in cart page")
-public void he_should_be_present_in_cart_page() {
-	System.out.println(driver.getCurrentUrl());
-}
+@Then("he should be present in {string} page")
+public void he_should_be_present_in_page(String expectedUrl) {
+	w.verifyUrl(expectedUrl);}
 
 @When("he clicks on checkout button")
 public void he_clicks_on_checkout_button() {
@@ -59,11 +58,9 @@ CartPage c=new CartPage(driver);
 c.setCheckout();
 }
 
-@Then("checkout page should be displayed")
-public void checkout_page_should_be_displayed() {
-	System.out.println(driver.getCurrentUrl());
-}
-
+@Then("{string} page should be displayed")
+public void page_should_be_displayed(String expectedUrl) {
+	w.verifyUrl(expectedUrl);}
 @When("he enters the first name as {string}")
 public void he_enters_the_first_name_as(String firstName) {
 	c1=new CheckoutPage1(driver);
@@ -84,10 +81,9 @@ public void he_enters_the_zip_code_as(String zipCode) {
 public void he_clicks_on_continue_button() {
 	c1.setContinue();
 }
-
-@Then("checkout step two page should be displayed")
-public void checkout_step_two_page_should_be_displayed() {
-	System.out.println(driver.getCurrentUrl());
+@Then("user should be present in {string} page")
+public void user_should_be_present_in_page(String expectedurl) {
+	w.verifyUrl(expectedurl);
 	c2=new CheckoutPage2(driver);
 	String itemTotalNumber = c2.getItemTotal();
 	String tax = c2.getTax();
@@ -96,18 +92,16 @@ public void checkout_step_two_page_should_be_displayed() {
 	System.out.println(tax);
 	System.out.println(summaryTotal); 
 }
-
 @When("he clicks on finish button")
 public void he_clicks_on_finish_button() {
 	c2.setFinish();
 }
-
-@Then("checkout complete page should be displayed")
-public void checkout_complete_page_should_be_displayed() {
-	System.out.println(driver.getCurrentUrl());
+@Then("{string} page should be displayed and the message should be {string}")
+public void page_should_be_displayed_and_the_message_should_be(String expectedUrl, String message) {
+	w.verifyUrl(expectedUrl);
 	CheckoutCompletePage c3=new CheckoutCompletePage(driver);
 	String orderConfirmedText = c3.getCompleteHeader().getText();
-	System.out.println(orderConfirmedText); 
+	Assert.assertEquals(orderConfirmedText, message);
 	boolean res = c3.getCompleteHeader().isDisplayed();
 	Assert.assertTrue(res,"Header is not displayed");
 }

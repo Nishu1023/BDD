@@ -5,7 +5,7 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(
 		features="featurefiles/AddToCart.feature",
 		glue={"stepdefinitions","hooks"},
-		dryRun = false,
+		dryRun = true,
 		monochrome = true,
 		plugin={"html:target/report.html","json:target/report.json"}
 		//		,tags="@Orange"
